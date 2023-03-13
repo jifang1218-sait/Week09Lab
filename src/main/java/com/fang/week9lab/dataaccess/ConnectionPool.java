@@ -25,7 +25,7 @@ public class ConnectionPool {
         this._datasource = null;
         try {
             InitialContext ic = new InitialContext();
-            _datasource = (DataSource)ic.lookup("java:/comp/env/jdbc/week7");
+            _datasource = (DataSource)ic.lookup("java:/comp/env/jdbc/week9");
         } catch (NamingException e) {
             e.printStackTrace();
         }

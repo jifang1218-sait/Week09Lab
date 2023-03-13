@@ -15,6 +15,11 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+
 /**
  *
  * @author jifang
@@ -23,7 +28,11 @@ public class DBUtil {
     static public User getUserByEmail(String email) {
         User ret = null;
         
-        Connection conn = ConnectionPool.instance().getConnection();
+        EntityManagerFactory emf = DBUtil.getEMF();
+        EntityManager em = emf.createEntityManager();
+       	ret = em.find(User.class, email);
+
+        /*Connection conn = ConnectionPool.instance().getConnection();
         
         try (PreparedStatement stmt = 
                 conn.prepareStatement("select * from user where email=?")) {
@@ -47,9 +56,9 @@ public class DBUtil {
             e.printStackTrace();
         }
         
-        ConnectionPool.instance().closeConnection(conn);
-        
-        return ret;
+        ConnectionPool.instance().closeConnection(conn);*/
+       	
+       	return ret;
     }
     
     static public User updateUser(User user) {
@@ -71,7 +80,7 @@ public class DBUtil {
             stmt.setString(col++, user.getFirstName().trim());
             stmt.setString(col++, user.getLastName().trim());
             stmt.setString(col++, user.getPassword());
-            stmt.setLong(col++, user.getRole().getId());
+            stmt.setInt(col++, user.getRole().getId());
             stmt.setString(col++, user.getEmail());
             stmt.executeUpdate();
             stmt.close();
@@ -100,7 +109,7 @@ public class DBUtil {
             stmt.setString(col++, user.getFirstName().trim());
             stmt.setString(col++, user.getLastName().trim());
             stmt.setString(col++, user.getPassword());
-            stmt.setLong(col++, user.getRole().getId());
+            stmt.setInt(col++, user.getRole().getId());
             stmt.executeUpdate();
             stmt.close();
         } catch (SQLException e) {
@@ -137,9 +146,11 @@ public class DBUtil {
         List<User> ret = new LinkedList<>();
         
         Connection conn = ConnectionPool.instance().getConnection();
-        try (PreparedStatement stmt = 
-                conn.prepareStatement("select * from user")) {
-            ResultSet results = stmt.executeQuery();
+        PreparedStatement stmt = null;
+        ResultSet results = null;
+        try {
+            stmt = conn.prepareStatement("select * from user");
+            results = stmt.executeQuery();
             while (results.next()) {
                 User user = new User();
                 int col = 1;
@@ -147,12 +158,13 @@ public class DBUtil {
                 user.setFirstName(results.getString(col++));
                 user.setLastName(results.getString(col++));
                 user.setPassword(results.getString(col++));
-                long roleId = results.getLong(col++);
+                int roleId = results.getInt(col++);
                 RoleService roleMgr = RoleService.instance();
                 user.setRole(new Role(roleId, roleMgr.getNameById(roleId)));
                 ret.add(user);
             }
             results.close();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } 
@@ -166,23 +178,36 @@ public class DBUtil {
         List<Role> ret = new LinkedList<>();
         
         Connection conn = ConnectionPool.instance().getConnection();
-        try (PreparedStatement stmt = 
-                conn.prepareStatement("select * from role")) {
-            ResultSet results = stmt.executeQuery();
+        PreparedStatement stmt = null;
+        ResultSet results = null;
+                
+        try {
+            stmt = conn.prepareStatement("select * from role"); 
+            results = stmt.executeQuery();
             while (results.next()) {
             	Role role = new Role();
             	int col = 1;
-            	role.setId(results.getLong(col++));
+            	role.setId(results.getInt(col++));
             	role.setName(results.getString(col++));
                 ret.add(role);
             }
             results.close();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } 
+        }
         
         ConnectionPool.instance().closeConnection(conn);
         
         return ret;
+    }
+    
+    static private EntityManagerFactory emf = null;
+    static public EntityManagerFactory getEMF() {
+        if (emf == null) {
+            emf = Persistence.createEntityManagerFactory("Week9LabPU");
+        }
+        
+        return emf;
     }
 }

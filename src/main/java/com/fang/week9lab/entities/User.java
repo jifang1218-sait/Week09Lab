@@ -6,16 +6,43 @@ package com.fang.week9lab.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+//import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 /**
  *
  * @author jifang
  */
+@Entity
+@Table(name="user")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
+    
+    @Id
 	private String email;
+    
+    @Basic(optional=false)
+    @Column(name="first_name")
     private String firstName;
+    
+    @Basic(optional=false)
+    @Column(name="last_name")
     private String lastName;
+    
+    @Basic(optional=false)
+    @Column(name="password")
     private String password;
+    
+    @OneToOne
+    @JoinColumn(name="role") 
     private Role role;
     
     public User() {

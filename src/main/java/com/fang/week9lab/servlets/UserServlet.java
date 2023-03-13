@@ -101,7 +101,7 @@ public class UserServlet extends HttpServlet {
                     user.setLastName(lastName);
                     user.setPassword(password);
                     Role role = new Role();
-                    role.setId(Long.parseLong(strRoleId));
+                    role.setId(Integer.parseInt(strRoleId));
                     RoleService roleMgr = RoleService.instance();
                     role.setName(roleMgr.getNameById(role.getId()));
                     user.setRole(role);
@@ -127,7 +127,7 @@ public class UserServlet extends HttpServlet {
                             user.setPassword(password);
                     }
                     Role role = new Role();
-                    role.setId(Long.parseLong(strRoleId));
+                    role.setId(Integer.parseInt(strRoleId));
                     RoleService roleMgr = RoleService.instance();
                     role.setName(roleMgr.getNameById(role.getId()));
                     user.setRole(role);

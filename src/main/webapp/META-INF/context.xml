@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/">
-<Resource name="jdbc/week9" auth="Container"
+<Context path="/Week9Lab">
+    <Resource name="jdbc/week9" auth="Container"
         driverClassName="com.mysql.cj.jdbc.Driver"
         url="jdbc:mysql://oracle:3306/userdb"
         username="jifang" password="jifang"

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RoleService {
 	
-	private Map<Long, Role> roles;
+	private Map<Integer, Role> roles;
 	
 	private static class Holder {
         private static final RoleService _instance = new RoleService();
@@ -26,7 +26,7 @@ public class RoleService {
         return Holder._instance;
     }
     
-    public String getNameById(long id) {
+    public String getNameById(int id) {
     	Role r = roles.get(id);
     	return r.getName();
     }
